@@ -18,9 +18,6 @@ export default function UsersPage() {
   const [search, setSearch] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">(
-    "all"
-  );
 
   const {
     data,
@@ -28,15 +25,14 @@ export default function UsersPage() {
     isError,
     isFetching,
     refetch,
-  } = useUsersQuery("rider", page, limit, search, startDate, endDate, statusFilter);
+  } = useUsersQuery("rider", page, limit, search, startDate, endDate);
   const statusMutation = useUpdateUserStatusMutation("rider");
 
   const users = data?.data ?? [];
   const pagination = data?.pagination;
   const totalPassengers = pagination?.total ?? 0;
   const totalPages = pagination?.totalPages ?? 1;
-  const filtersApplied =
-    Boolean(search || startDate || endDate) || statusFilter !== "all";
+  const filtersApplied = Boolean(search || startDate || endDate);
 
   const handleStatusToggle = async (id: string, currentStatus: string) => {
     const nextStatus =
@@ -98,7 +94,7 @@ export default function UsersPage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 gap-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatsCard
           title="Total Passengers"
           value={totalPassengers.toLocaleString()}
@@ -113,7 +109,7 @@ export default function UsersPage() {
 
       <DataTable
         users={users}
-        loading={isLoading}
+        loading={isLoading || isFetching}
         page={page}
         setPage={setPage}
         limit={limit}
@@ -125,8 +121,6 @@ export default function UsersPage() {
         setStartDate={setStartDate}
         endDate={endDate}
         setEndDate={setEndDate}
-        statusFilter={statusFilter}
-        setStatusFilter={setStatusFilter}
         onToggleStatus={handleStatusToggle}
         togglingUserId={statusMutation.variables?.id ?? null}
         isToggling={statusMutation.isPending}

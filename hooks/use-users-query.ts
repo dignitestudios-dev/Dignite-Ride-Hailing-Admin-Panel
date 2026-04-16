@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { getUsers, updateUserStatus } from "@/lib/api/users.api";
 
 export function useUsersQuery(
@@ -8,11 +13,12 @@ export function useUsersQuery(
   search: string,
   startDate: string,
   endDate: string,
-  status: "all" | "active" | "inactive"
+  status: "all" | "active" | "inactive" = "all"
 ) {
   return useQuery({
     queryKey: ["users", type, page, limit, search, startDate, endDate, status],
     queryFn: () => getUsers(type, page, limit, search, startDate, endDate, status),
+    placeholderData: keepPreviousData,
 
     staleTime: 1000 * 60 * 5,
     retry: 1,
