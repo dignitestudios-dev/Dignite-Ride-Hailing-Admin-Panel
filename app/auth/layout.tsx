@@ -21,7 +21,10 @@ export default function RootLayout({
           <div className="relative z-1 flex items-center justify-center">
             <GridShape />
             <div className="flex flex-col items-center max-w-xs">
-              <Logo size={100} color="#ffffff" />
+              <div className="mb-6 flex h-50 w-50 items-center justify-center rounded-full bg-black/70">
+
+              <Logo size={160} color="#ffffff" />
+              </div>
               <h1 className="text-4xl font-semibold text-white">
                 Admin Panel
               </h1>
