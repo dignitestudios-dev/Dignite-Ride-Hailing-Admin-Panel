@@ -17,7 +17,7 @@ export default function RootLayout({
           {children}
         </div>
         {/* Right side - Brand */}
-        <div className="hidden h-full w-1/2 items-center bg-primary lg:grid">
+        <div className="hidden h-full w-1/2 items-center bg-linear-to-tl from-primary to-secondary lg:grid">
           <div className="relative z-1 flex items-center justify-center">
             <GridShape />
             <div className="flex flex-col items-center max-w-xs">
