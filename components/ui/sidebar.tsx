@@ -23,6 +23,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import {
+  DEFAULT_SIDEBAR_CONFIG,
+  SidebarContext as SidebarConfigContext,
+} from "@/contexts/sidebar-context"
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
@@ -157,9 +161,9 @@ function SidebarProvider({
 }
 
 function Sidebar({
-  side = "left",
-  variant = "sidebar",
-  collapsible = "offcanvas",
+  side,
+  variant,
+  collapsible,
   className,
   children,
   ...props
@@ -169,8 +173,14 @@ function Sidebar({
   collapsible?: "offcanvas" | "icon" | "none"
 }) {
   const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
+  const configContext = React.useContext(SidebarConfigContext)
+  const resolvedSide = side ?? configContext?.config.side ?? DEFAULT_SIDEBAR_CONFIG.side
+  const resolvedVariant =
+    variant ?? configContext?.config.variant ?? DEFAULT_SIDEBAR_CONFIG.variant
+  const resolvedCollapsible =
+    collapsible ?? configContext?.config.collapsible ?? DEFAULT_SIDEBAR_CONFIG.collapsible
 
-  if (collapsible === "none") {
+  if (resolvedCollapsible === "none") {
     return (
       <div
         data-slot="sidebar"
@@ -198,7 +208,7 @@ function Sidebar({
               "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
             } as React.CSSProperties
           }
-          side={side}
+          side={resolvedSide}
         >
           <SheetHeader className="sr-only">
             <SheetTitle>Sidebar</SheetTitle>
@@ -214,9 +224,9 @@ function Sidebar({
     <div
       className="group peer text-sidebar-foreground hidden md:block"
       data-state={state}
-      data-collapsible={state === "collapsed" ? collapsible : ""}
-      data-variant={variant}
-      data-side={side}
+      data-collapsible={state === "collapsed" ? resolvedCollapsible : ""}
+      data-variant={resolvedVariant}
+      data-side={resolvedSide}
       data-slot="sidebar"
     >
       {/* This is what handles the sidebar gap on desktop */}
@@ -235,11 +245,11 @@ function Sidebar({
         data-slot="sidebar-container"
         className={cn(
           "fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear md:flex",
-          side === "left"
+          resolvedSide === "left"
             ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
             : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
           // Adjust the padding for floating and inset variants.
-          variant === "floating" || variant === "inset"
+          resolvedVariant === "floating" || resolvedVariant === "inset"
             ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
             : "group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l",
           className

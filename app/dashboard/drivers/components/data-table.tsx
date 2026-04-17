@@ -298,14 +298,15 @@ export function DataTable({
                     onClick={() => router.push(`/dashboard/drivers/${user.id}`)}
                   >
                     <TableCell className="px-4 py-4 font-medium">
-                      {user.name || "—"}
+                      <p className="max-w-[220px] truncate">{user.name || "—"}</p>
                     </TableCell>
                     <TableCell className="px-4 py-4 text-muted-foreground">
                       {user.email ? (
                         <a
                           href={`mailto:${user.email}`}
                           onClick={(e) => e.stopPropagation()}
-                          className="underline underline-offset-2"
+                          className="inline-block max-w-[280px] truncate underline underline-offset-2"
+                          title={user.email}
                         >
                           {user.email}
                         </a>
@@ -318,7 +319,8 @@ export function DataTable({
                         <a
                           href={`tel:${phone.tel}`}
                           onClick={(e) => e.stopPropagation()}
-                          className="underline underline-offset-2"
+                          className="inline-block max-w-[170px] truncate underline underline-offset-2"
+                          title={phone.label}
                         >
                           {phone.label}
                         </a>

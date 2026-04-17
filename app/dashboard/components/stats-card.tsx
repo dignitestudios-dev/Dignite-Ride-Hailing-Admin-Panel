@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { type LucideIcon } from "lucide-react";
 import { TrendingUp, TrendingDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -7,7 +8,7 @@ import { cn } from "@/lib/utils";
 interface StatsCardProps {
   title: string;
   value: string | number;
-  description?: string;
+  description?: ReactNode;
   icon: LucideIcon;
   trend?: { value: number; label: string };
   className?: string;

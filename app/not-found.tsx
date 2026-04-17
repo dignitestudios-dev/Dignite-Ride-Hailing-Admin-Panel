@@ -27,7 +27,7 @@ export default function NotFound() {
       </div>
       {/* <!-- Footer --> */}
       <p className="absolute text-sm text-center text-gray-500 -translate-x-1/2 bottom-6 left-1/2">
-        &copy; {new Date().getFullYear()} - Admin Dashboard
+        &copy; {new Date().getFullYear()} - Dignite Rides Admin Dashboard
       </p>
     </div>
   );

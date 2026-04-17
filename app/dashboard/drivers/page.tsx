@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AlertCircle, CarFront, RefreshCw } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,7 @@ export default function DriversPage() {
   const [search, setSearch] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [suppressTableSkeleton, setSuppressTableSkeleton] = useState(false);
 
   const {
     data,
@@ -34,15 +35,23 @@ export default function DriversPage() {
   const totalPages = pagination?.totalPages ?? 1;
   const filtersApplied = Boolean(search || startDate || endDate);
 
+  useEffect(() => {
+    if (suppressTableSkeleton && !isFetching) {
+      setSuppressTableSkeleton(false);
+    }
+  }, [suppressTableSkeleton, isFetching]);
+
   const handleStatusToggle = async (id: string, currentStatus: string) => {
     const nextStatus =
       currentStatus?.toLowerCase() === "active" ? "deactivated" : "active";
+    setSuppressTableSkeleton(true);
     try {
       await statusMutation.mutateAsync({ id, status: nextStatus });
       toast.success(
         `Driver ${nextStatus === "active" ? "activated" : "deactivated"} successfully`
       );
     } catch {
+      setSuppressTableSkeleton(false);
       toast.error("Failed to update driver status");
     }
   };
@@ -109,7 +118,7 @@ export default function DriversPage() {
 
       <DataTable
         users={drivers}
-        loading={isLoading || isFetching}
+        loading={isLoading || (isFetching && !suppressTableSkeleton)}
         page={page}
         setPage={setPage}
         limit={limit}

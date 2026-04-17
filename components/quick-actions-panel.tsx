@@ -7,8 +7,18 @@ import {
   Megaphone,
   Wallet,
   ClipboardList,
-  Car,
+  ShieldAlert,
+  LayoutPanelTop,
+  PanelLeftClose,
+  ArrowLeftRight,
+  RotateCcw,
 } from "lucide-react";
+import {
+  SIDEBAR_COLLAPSIBLE_OPTIONS,
+  SIDEBAR_SIDE_OPTIONS,
+  SIDEBAR_VARIANT_OPTIONS,
+} from "@/contexts/sidebar-context";
+import { useSidebarConfig } from "@/hooks/use-sidebar-config";
 
 const quickActions = [
   {
@@ -27,13 +37,14 @@ const quickActions = [
     icon: Wallet,
   },
   {
-    label: "Manage Vehicle Categories",
-    href: "/dashboard/vehicle-categories",
-    icon: Car,
+    label: "Manage Reports",
+    href: "/dashboard/reports",
+    icon: ShieldAlert,
   },
 ];
 
 export function QuickActionsPanel() {
+  const { config, setConfigOption, resetConfig } = useSidebarConfig();
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isReady, setIsReady] = useState(false);
@@ -121,25 +132,124 @@ export function QuickActionsPanel() {
       aria-label="Quick actions panel"
     >
       <div className="pointer-events-none absolute right-0 bottom-20 flex flex-col items-end gap-3">
+        <div
+          className={`w-[18rem] rounded-xl border border-primary/20 bg-background/95 p-3 shadow-xl backdrop-blur transition-all duration-300 ${
+            open
+              ? "pointer-events-auto opacity-100 translate-y-0 scale-100"
+              : "pointer-events-none opacity-0 translate-y-3 scale-95"
+          }`}
+          style={{ transitionDelay: "20ms" }}
+        >
+          <p className="mb-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+            Sidebar Config
+          </p>
+
+          <div className="space-y-2.5">
+            <div>
+              <p className="mb-1 inline-flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground uppercase">
+                <LayoutPanelTop className="size-3.5" />
+                Variant
+              </p>
+              <div className="grid grid-cols-3 gap-1">
+                {SIDEBAR_VARIANT_OPTIONS.map((option) => (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => setConfigOption("variant", option.value)}
+                    className={`rounded-md border px-2 py-1 text-[11px] font-medium transition-colors ${
+                      config.variant === option.value
+                        ? "border-primary/40 bg-primary/10 text-primary"
+                        : "border-border/80 bg-background text-muted-foreground hover:bg-muted/70"
+                    }`}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <p className="mb-1 inline-flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground uppercase">
+                <PanelLeftClose className="size-3.5" />
+                Collapsible
+              </p>
+              <div className="grid grid-cols-3 gap-1">
+                {SIDEBAR_COLLAPSIBLE_OPTIONS.map((option) => (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => setConfigOption("collapsible", option.value)}
+                    className={`rounded-md border px-2 py-1 text-[11px] font-medium transition-colors ${
+                      config.collapsible === option.value
+                        ? "border-primary/40 bg-primary/10 text-primary"
+                        : "border-border/80 bg-background text-muted-foreground hover:bg-muted/70"
+                    }`}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <p className="mb-1 inline-flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground uppercase">
+                <ArrowLeftRight className="size-3.5" />
+                Side
+              </p>
+              <div className="grid grid-cols-2 gap-1">
+                {SIDEBAR_SIDE_OPTIONS.map((option) => (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => setConfigOption("side", option.value)}
+                    className={`rounded-md border px-2 py-1 text-[11px] font-medium transition-colors ${
+                      config.side === option.value
+                        ? "border-primary/40 bg-primary/10 text-primary"
+                        : "border-border/80 bg-background text-muted-foreground hover:bg-muted/70"
+                    }`}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={resetConfig}
+            className="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-md border border-border/80 bg-background px-2 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/70"
+          >
+            <RotateCcw className="size-3.5" />
+            Reset Default
+          </button>
+        </div>
+
         {quickActions.map((action, index) => (
           <div
             key={action.label}
             className={`flex items-center gap-3 transition-all duration-300 ${
-              open ? "opacity-100 translate-y-0 scale-100" : "pointer-events-none opacity-0 translate-y-3 scale-95"
+              open
+                ? "pointer-events-auto opacity-100 translate-y-0 scale-100"
+                : "pointer-events-none opacity-0 translate-y-3 scale-95"
             } ${open ? "quick-action-bubble" : ""}`}
             style={{ transitionDelay: `${index * 60}ms`, animationDelay: `${index * 60}ms` }}
           >
             <Link
               href={action.href}
               onClick={handleActionClick}
-              className="pointer-events-auto whitespace-nowrap rounded-lg bg-zinc-700 px-3 py-1.5 text-sm font-medium text-white shadow"
+              className={`whitespace-nowrap rounded-lg bg-zinc-700 px-3 py-1.5 text-sm font-medium text-white shadow ${
+                open ? "pointer-events-auto" : "pointer-events-none"
+              }`}
             >
               {action.label}
             </Link>
             <Link
               href={action.href}
               onClick={handleActionClick}
-              className="pointer-events-auto flex h-10 w-10 items-center justify-center rounded-full border border-primary/20 bg-white text-primary shadow-lg"
+              className={`flex h-10 w-10 items-center justify-center rounded-full border border-primary/20 bg-white text-primary shadow-lg ${
+                open ? "pointer-events-auto" : "pointer-events-none"
+              }`}
               aria-label={action.label}
               title={action.label}
             >

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useDashboardStats, useRideAnalytics } from "@/hooks/use-dashboard";
 import { StatsCard } from "./components/stats-card";
 import { PendingActionsBar } from "./components/pending-actions-bar";
@@ -42,6 +43,17 @@ export default function DashboardPage() {
   const isLoading = statsLoading || analyticsLoading;
   const isFetching = statsFetching || analyticsFetching;
   const isError = statsError || analyticsError;
+  const [animateIn, setAnimateIn] = useState(false);
+
+  useEffect(() => {
+    if (isLoading) {
+      setAnimateIn(false);
+      return;
+    }
+
+    const frame = window.requestAnimationFrame(() => setAnimateIn(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, [isLoading]);
 
   function handleRefresh() {
     refetchStats();
@@ -83,11 +95,19 @@ export default function DashboardPage() {
   }
 
   const { userMetrics, rideMetrics, revenueMetrics, pendingActions } = stats;
+  const sectionBaseClass =
+    "transition-all duration-500 ease-out will-change-transform";
+  const sectionHiddenClass = "translate-y-2 opacity-0";
+  const sectionVisibleClass = "translate-y-0 opacity-100";
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div
+        className={`${sectionBaseClass} ${
+          animateIn ? sectionVisibleClass : sectionHiddenClass
+        } flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between`}
+      >
         <div className="flex items-center gap-3">
           <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary ring-1 ring-primary/20">
             <Activity className="size-5" />
@@ -114,7 +134,12 @@ export default function DashboardPage() {
       </div>
 
       {/* Stats cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div
+        className={`${sectionBaseClass} ${
+          animateIn ? sectionVisibleClass : sectionHiddenClass
+        } grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4`}
+        style={{ transitionDelay: "70ms" }}
+      >
         <StatsCard
           title="Active Passengers"
           value={userMetrics.totalActiveRiders.toLocaleString()}
@@ -150,10 +175,22 @@ export default function DashboardPage() {
       </div>
 
       {/* Pending actions */}
-      <PendingActionsBar pendingActions={pendingActions} />
+      <div
+        className={`${sectionBaseClass} ${
+          animateIn ? sectionVisibleClass : sectionHiddenClass
+        }`}
+        style={{ transitionDelay: "120ms" }}
+      >
+        <PendingActionsBar pendingActions={pendingActions} />
+      </div>
 
       {/* Charts row */}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+      <div
+        className={`${sectionBaseClass} ${
+          animateIn ? sectionVisibleClass : sectionHiddenClass
+        } grid grid-cols-1 gap-4 lg:grid-cols-2`}
+        style={{ transitionDelay: "170ms" }}
+      >
         {analytics && (
           <>
             <RideMetricsCard
@@ -166,7 +203,14 @@ export default function DashboardPage() {
       </div>
 
       {/* Registration cards */}
-      <RegistrationCards userMetrics={userMetrics} />
+      <div
+        className={`${sectionBaseClass} ${
+          animateIn ? sectionVisibleClass : sectionHiddenClass
+        }`}
+        style={{ transitionDelay: "220ms" }}
+      >
+        <RegistrationCards userMetrics={userMetrics} />
+      </div>
     </div>
   );
 }

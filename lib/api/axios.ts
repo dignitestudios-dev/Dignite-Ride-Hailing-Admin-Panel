@@ -2,7 +2,7 @@ import axios from "axios";
 import { store } from "@/lib/store";
 import { forceLogout } from "@/lib/slices/authSlice";
 
-export const baseURL = "https://api.staging.epicridesapp.com/api/admin";
+export const baseURL = "https://api.dev.epicridesapp.com/api/admin";
 
 const headers = {
   "Content-Type": "application/json",
